@@ -25,7 +25,8 @@
 -- as $\sqrt{8/7 n + O(1)} \approx 1.07 \sqrt{n + O(1)}$.
 -- The infinite hexagonal packing is the best packing of identical circles
 -- in the plane.
--- For this case, 10% extra area per circle.
+-- For this case, 10% extra area per circle (factor
+-- $\sqrt{12}/\pi \approx 1.10$).
 -- If we could pack $n$ circles and the 10% extra area perfectly into
 -- a circle, it would have a radius of about $\sqrt{1.1 n}$ or
 -- $1.05 \sqrt{n}$.
