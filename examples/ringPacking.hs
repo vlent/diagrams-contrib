@@ -105,8 +105,10 @@ npf = sum . map snd . factorise
 -- number of distinct prime factors
 ndpf = length . factorise
 
-factorDiagram pack n bs d = nest pack (reverse $ map fromIntegral $ factors n) bs d
-powerFactorDiagram pack n bs d = nest pack (reverse $ map fromIntegral $ factors' n) bs d
+factorDiagram pack n bs d =
+  nest pack (reverse $ map fromIntegral $ factors n) bs d
+powerFactorDiagram pack n bs d =
+  nest pack (reverse $ map fromIntegral $ factors' n) bs d
 
 bagSelect [] = []
 bagSelect ((x, 1):b) = (x, b):[ (y, (x, 1):b') | (y, b') <- bagSelect b ]
@@ -127,30 +129,38 @@ dots = coldots
 --main = defaultMain (packRings 7 (packRings 3 gdot dot))
 --main = defaultMain (nest packRings [7, 5, 3] gdot dot)
 numlabel n = text (show n) <> circle 1
-numbers ns = cat unit_Y [ numlabel n === packRings n (dots!!(npf (fromIntegral n)+1)) dot | n <- ns ]
+numbers ns = cat unit_Y [ numlabel n
+                          ===
+                          packRings n (dots!!(npf (fromIntegral n)+1)) dot
+                        | n <- ns ]
 prim maxp = cat unit_Y [ numlabel n === packRings (fromIntegral n) gdot dot
                        | n <- takeWhile (<maxp) primes ]
 fd n = factorDiagram packRings n dots dot
 pfd n = powerFactorDiagram packRings n dots dot
 factorisations ns = cat unit_Y [ numlabel n === fd n | n <- ns ]
 powerfactorisations ns = cat unit_Y [ numlabel n === pfd n | n <- ns ]
-table = vcat [ hcat [ fd (10*i+j+1) # scaleUToY 0.8 <> square 1 | j <- [0..9] ] | i <- [0..19] ]
-powertable = vcat [ hcat [ pfd (10*i+j+1) # scaleUToY 0.8 <> square 1 | j <- [0..9] ] | i <- [0..19] ]
-allfactorisations ns = cat unit_Y [ numlabel n
-                                    ===
-                                    cat unitX [ nest packRings (map fromIntegral p) dots dot
-                                              | p <- bagPermutations $ factorise n ]
-                                  | n <- ns ]
-allpowerfactorisations ns = cat unit_Y [ numlabel n
-                                         ===
-                                         cat unitX [ nest packRings (map fromIntegral p) dots dot
-                                                   | p <- permutations $ factors' n ]
-                                       | n <- ns ]
-years = (((text "2012" # fc white # fontSize 10) <> (dot # scale (sqrt 2012))) |||
+table = vcat [ hcat [ fd (10*i+j+1) # scaleUToY 0.8 <> square 1
+                    | j <- [0..9] ] | i <- [0..19] ]
+powertable = vcat [ hcat [ pfd (10*i+j+1) # scaleUToY 0.8 <> square 1
+                         | j <- [0..9] ] | i <- [0..19] ]
+allfactorisations ns =
+  cat unit_Y [ numlabel n
+               ===
+               cat unitX [ nest packRings (map fromIntegral p) dots dot
+                         | p <- bagPermutations $ factorise n ]
+             | n <- ns ]
+allpowerfactorisations ns =
+  cat unit_Y [ numlabel n
+               ===
+               cat unitX [ nest packRings (map fromIntegral p) dots dot
+                         | p <- permutations $ factors' n ]
+             | n <- ns ]
+years = (((text "2012" # fc white # fontSize 10) <>
+          (dot # scale (sqrt 2012))) |||
          (numbers [2012] # centerY) |||
          (allfactorisations [2012]) # centerY) ===
-        (((text "2013" # fc white # fontSize 10
-          ) <> (dot # scale (sqrt 2013))) |||
+        (((text "2013" # fc white # fontSize 10) <>
+          (dot # scale (sqrt 2013))) |||
          (numbers [2013] # centerY) |||
          (allfactorisations [2013]) # centerY)
                             
