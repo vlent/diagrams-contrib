@@ -1,7 +1,54 @@
 {-# LANGUAGE NoMonomorphismRestriction #-}
 
+
+-----------------------------------------------------------------------------
+-- |
+-- Module      :  Diagrams.TwoD.Layout.RingPacking
+-- Copyright   :  (c) 2013 Jan Van lent
+-- License     :  BSD-style (see LICENSE)
+-- Maintainer  :  jakke.vanlent+git@gmail.com
+--
+-- More compact versions of the factorization diagrams, as seen at
 -- <http://mathlesstraveled.com/2012/10/05/factorization-diagrams/>
+-- and
 -- <http://mathlesstraveled.com/2012/11/05/more-factorization-diagrams/>
+--
+-- The compact layout is achieved by circle in circle packings based
+-- on concentric rings.
+-- The resulting packings are not the most compact, but they have
+-- more symmetry and the method is very simple.
+-- The radius of a circle with area equal to that of $n$ unit circles
+-- is equal to $\sqrt{n}$.
+-- This can clearly not be achieved if the unit circles are not allowed to
+-- overlap.
+-- The compact layout of $n$ unit circles has a bounding radius that scales
+-- as $\sqrt{8/7 n + O(1)} \approx 1.07 \sqrt{n + O(1)}$.
+-- The infinite hexagonal packing is the best packing of identical circles
+-- in the plane.
+-- For this case, 10% extra area per circle.
+-- If we could pack $n$ circles and the 10% extra area perfectly into
+-- a circle, it would have a radius of about $\sqrt{1.1 n}$ or
+-- $1.05 \sqrt{n}$.
+--
+-- The bounding radius of the factorization diagrams scales as $O(n)$,
+-- because numbers of the form $n=2^p$ are layed out in a linear fashion.
+-- More compact diagrams are obtained by combining all identical factors.
+-- E.g. use $72 = 2^3*3^2 = 8*9$ instead of $72 = 2*2*2*3*3$.
+--
+-- The main example is "allfactorisations.svg".
+-- Prime numbers show up as a single compact diagram with only one color.
+-- Powers of primes show up as a single, less compact diagram with as
+-- many colors as there are factors.
+-- For numbers with more than one distinct factor, the results for all
+-- possible ordering of factors are shown.
+--
+-- Even quite big numbers still have reasonably compact factorization
+-- diagrams as is shown by the example with 2012 and 2013 ("years.svg")
+--
+-- The examples can be viewed in an SVG capable browser by using
+-- <http://htmlpreview.github.com>
+-- E.g., <http://htmlpreview.github.com/?https://github.com/vlent/diagrams-contrib/blob/master/examples/primes.svg>.
+-----------------------------------------------------------------------------
 
 
 import Data.List
@@ -65,6 +112,7 @@ bagSelect [] = []
 bagSelect ((x, 1):b) = (x, b):[ (y, (x, 1):b') | (y, b') <- bagSelect b ]
 bagSelect ((x, n):b) = (x, (x, n-1):b):[ (y, (x, n):b') | (y, b') <- bagSelect b ]
 
+-- see also <http://hackage.haskell.org/package/multiset-comb>
 bagPermutations [] = [[]]
 bagPermutations b = [ x:ys | (x, b') <- bagSelect b, ys <- bagPermutations b' ]
 
